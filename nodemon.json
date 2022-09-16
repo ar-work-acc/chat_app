@@ -1,0 +1,6 @@
+{
+  "watch": ["src", "dotenv.dev.env"],
+  "ext": "js,json",
+  "ignore": ["src/**/*.{spec,test}.js"],
+  "exec": "NODE_ENV=development DOTENV_CONFIG_PATH=./dotenv.dev.env node --es-module-specifier-resolution=node -r dotenv/config src/server.js"
+}

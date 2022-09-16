@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  mongo:
+    build: .
+    image: local/mongo_single_rs
+    container_name: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: pw2022mdb
+      MONGO_INITDB_DATABASE: admin
+    ports:
+      - 27017:27017
+    command: mongod --keyFile /opt/keyfile --replSet myReplicaSet --bind_ip localhost,mongo
+    networks:
+      - chat_network
+  redis:
+    container_name: redis
+    image: redis:7-bullseye
+    command: redis-server --requirepass pw2022r
+    restart: always
+    ports:
+      - 6379:6379
+    networks:
+      - chat_network
+networks:
+  chat_network:

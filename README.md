@@ -85,6 +85,6 @@ Add rules to relax formatting:
 
 ## MongoDB replica set (for transactions)
 
-TODO: did not enforce auth!
-
-Remember to edit /etc/hosts to add mongo1/2/3 to localhost.
+1. Check /etc/hosts (maybe not necessary for single container).
+2. You run 'rs.initiate()' to start a single container replica set in
+   run_docker_compose.sh.

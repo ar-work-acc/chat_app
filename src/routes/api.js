@@ -8,6 +8,7 @@ import {getUserInfo, oauthSignIn, login, logout} from '../controllers/login';
 import {
   acceptFriendRequest,
   addFriendRequest,
+  getFriendData,
   getFriendRequests,
   getFriends,
   getMessages,
@@ -41,6 +42,8 @@ apiRouter.get('/user', getUserInfo);
 
 // get friends
 apiRouter.get('/friends', getFriends);
+
+apiRouter.get('/friends/:friendId', getFriendData);
 
 // get messages
 apiRouter.get('/messages/:friendId', getMessages);

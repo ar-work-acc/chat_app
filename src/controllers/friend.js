@@ -13,6 +13,28 @@ export const getFriends = async (ctx) => {
   ctx.body = user.friends;
 };
 
+/**
+ * Get friend data for user. Check if it's a friend first.
+ *
+ * @param {Context} ctx
+ */
+export const getFriendData = async (ctx) => {
+  const userId = ctx.state.user._id;
+  const {friendId} = ctx.params;
+
+  const user = await User.findById(userId);
+  if (user.friends.includes(friendId)) {
+    const friend = await User.findById(friendId).select(
+        '_id avatar firstName lastName username',
+    );
+    ctx.status = 200;
+    ctx.body = friend;
+    return;
+  } else {
+    ctx.status = 403;
+  }
+};
+
 export const getMessages = async (ctx) => {
   const {page = 0, pageSize = 100} = ctx.request.query;
 

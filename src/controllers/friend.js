@@ -45,7 +45,7 @@ export const getNonFriendUsers = async (ctx) => {
 
   const user = await User.findOne({_id: ctx.state.user._id});
   const users = await User.find(
-      {_id: {$nin: user.friends}, username: {$regex: q}},
+      {_id: {$nin: [...user.friends, user._id]}, username: {$regex: q}},
       '_id username firstName lastName',
   )
       .sort({username: 1})

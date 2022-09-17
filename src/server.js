@@ -10,6 +10,7 @@ import {
   MONGODB_PASSWORD,
   MONGODB_DB_NAME,
   MONGODB_PORT,
+  MONGODB_REPLICA_SET_NAME,
 } from './config/index';
 import {logging} from './utils/logger';
 import {jwtErrorSuppressor} from './middlewares/index';
@@ -55,12 +56,14 @@ startWebSocketServer(server);
 
 // connect to MongoDB
 try {
-  await mongoose.connect(`mongodb://${MONGODB_HOST}:${MONGODB_PORT}/?replicaSet=myReplicaSet`, {
-    user: MONGODB_USERNAME,
-    pass: MONGODB_PASSWORD,
-    dbName: MONGODB_DB_NAME,
-    autoCreate: false, // should be created by database/initdb.js already
-  });
+  await mongoose.connect(
+      `mongodb://${MONGODB_HOST}:${MONGODB_PORT}/?replicaSet=${MONGODB_REPLICA_SET_NAME}`,
+      {
+        user: MONGODB_USERNAME,
+        pass: MONGODB_PASSWORD,
+        dbName: MONGODB_DB_NAME,
+        autoCreate: false, // should be created by database/initdb.js already
+      });
   logger.debug(
       `*** Connected to MongoDB:` +
       `${MONGODB_HOST}:${MONGODB_PORT}/${MONGODB_DB_NAME} ***`,

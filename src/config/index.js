@@ -10,6 +10,7 @@ export const {
   MONGODB_PORT = 27017,
   MONGODB_USERNAME = 'root',
   MONGODB_PASSWORD = 'admin',
+  MONGODB_REPLICA_SET_NAME = 'myReplicaSet',
   MONGODB_DB_NAME = 'test',
   ORIGIN = 'https://localhost:3000',
   REDIS_CHANNEL_NAME = 'wss',

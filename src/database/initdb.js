@@ -5,6 +5,7 @@ import {
   MONGODB_PASSWORD,
   MONGODB_DB_NAME,
   MONGODB_PORT,
+  MONGODB_REPLICA_SET_NAME,
 } from '../config/index';
 import {logging} from '../utils/logger';
 import {FriendRequest, Message, User} from './models';
@@ -17,12 +18,14 @@ const delay = async () =>
 try {
   logger.debug(`Connection to MongoDB: ${MONGODB_HOST}:${MONGODB_PORT}`);
 
-  await mongoose.connect(`mongodb://${MONGODB_HOST}:${MONGODB_PORT}/?replicaSet=myReplicaSet`, {
-    user: MONGODB_USERNAME,
-    pass: MONGODB_PASSWORD,
-    dbName: MONGODB_DB_NAME,
-    autoCreate: true,
-  });
+  await mongoose.connect(
+      `mongodb://${MONGODB_HOST}:${MONGODB_PORT}/?replicaSet=${MONGODB_REPLICA_SET_NAME}`,
+      {
+        user: MONGODB_USERNAME,
+        pass: MONGODB_PASSWORD,
+        dbName: MONGODB_DB_NAME,
+        autoCreate: true,
+      });
 
   logger.debug(`Empty collections...`);
   await User.deleteMany({});

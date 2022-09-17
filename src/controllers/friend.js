@@ -69,6 +69,11 @@ export const addFriendRequest = async (ctx) => {
   ctx.body = friendRequest;
 };
 
+/**
+ * Get friend requests for this user.
+ *
+ * @param {Context} ctx
+ */
 export const getFriendRequests = async (ctx) => {
   const {page = 0, pageSize = 100} = ctx.request.query;
 
@@ -85,6 +90,23 @@ export const getFriendRequests = async (ctx) => {
       });
 
   ctx.body = friendRequests;
+};
+
+/**
+ * Get friend requests that the user sent but is not processed yet.
+ *
+ * @param {Context} ctx
+ */
+export const getUserFriendRequest = async (ctx) => {
+  const {page = 0, pageSize = 100} = ctx.request.query;
+  const requests = await FriendRequest.find({
+    from: ctx.state.user._id,
+    processed: false,
+  })
+      .sort('-date')
+      .skip(page * pageSize)
+      .limit(pageSize);
+  ctx.body = requests;
 };
 
 export const acceptFriendRequest = async (ctx) => {

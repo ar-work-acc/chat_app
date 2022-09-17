@@ -12,6 +12,7 @@ import {
   getFriends,
   getMessages,
   getNonFriendUsers,
+  getUserFriendRequest,
 } from '../controllers/friend';
 
 export const apiRouter = new Router();
@@ -52,6 +53,9 @@ apiRouter.post('/add-friend-request', addFriendRequest);
 
 // get friend requests
 apiRouter.get('/friend-requests', getFriendRequests);
+
+// get user sent friend requests
+apiRouter.get('/user-friend-requests', getUserFriendRequest);
 
 // accept friend request
 apiRouter.post('/accept-friend-request', acceptFriendRequest);

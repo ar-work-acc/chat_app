@@ -1,6 +1,19 @@
 version: "3.9"
 
 services:
+  chat_cra:
+    build: ./app
+    image: local/chat_cra
+    container_name: chat_cra
+    depends_on:
+      - chat_server
+      - mongo
+      - redis
+    restart: "no"
+    ports:
+      - 3001:443
+    networks:
+      - chat_network
   chat_server:
     build: .
     image: local/chat_server

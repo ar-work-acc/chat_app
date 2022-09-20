@@ -1,6 +1,18 @@
-# Chat App (pure JavaScript)
+# Chat App demo
 
-Use Redis for pub/sub (ioredis).
+This is just a sample project to demonstrate how to write a messenger app with
+the MERN stack (MongoDB, Express, React, Node). Integrated Google/Facebook sign
+in function.
+
+## Used
+
+Backend: Koa.js, ws (WebSocket server), mongoose, ioredis  
+Frontend: create-react-app (React-Redux with RTKQuery, created as a submodule)  
+Database: MongoDB 6 (single container replica set for transaction), Redis 7 (for
+pub/sub WebSocket messages)  
+Deployment: Docker compose
+
+JavaScript with ES6 modules syntax used for backend code.
 
 ## Environments
 
@@ -34,8 +46,10 @@ Set JWT cookie to: httpOnly, secure; also sign it!
 
 ## Other notes
 
-1. Note that when you use wss, create-react-app must use the same credentials
-   for HTTPS or Chrome will block the connection.
+Note that when you use wss/https, create-react-app must use the same credentials
+for HTTPS or Chrome will block the connection.
+
+For local development:
 
 ```
 HTTPS=true SSL_CRT_FILE=./.certs/server.crt SSL_KEY_FILE=./.certs/server.key PORT=3001 react-scripts start
@@ -66,12 +80,6 @@ Add rules to relax formatting:
 
 ```json
   "rules": {
-    "max-len": [
-      "error",
-      {
-        "code": 120
-      }
-    ],
     "no-unused-vars": [
       "warn",
       {
@@ -85,6 +93,12 @@ Add rules to relax formatting:
 
 ## MongoDB replica set (for transactions)
 
-1. Check /etc/hosts (maybe not necessary for single container).
+1. Check /etc/hosts file.
 2. You run 'rs.initiate()' to start a single container replica set in
    run_docker_compose.sh.
+
+## Scripts
+
+1. Run "run_docker_compose.sh" to start up the system.
+2. If you want to initialize the database with some data, run "npm run initdb"
+   (optional).

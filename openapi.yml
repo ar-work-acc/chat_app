@@ -388,6 +388,47 @@ paths:
                 $ref: "#/components/schemas/ServerResponseMessage"
               example:
                 message: Unauthorized
+  /accept-friend-request:
+    post:
+      tags:
+        - Friends
+      security:
+        - cookieAuth: []
+      summary: Accept a friend request.
+      description: Accept a friend request.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                targetUserId:
+                  type: string
+      responses:
+        "200":
+          description: operation success message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
+              example:
+                message: Friend added
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
+              example:
+                message: Unauthorized
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
+              example:
+                message: Error accepting friend request.
 components:
   schemas:
     ServerResponseMessage:

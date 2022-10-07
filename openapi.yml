@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: chat app API
+  title: OpenAPI for Chat App
   version: "0.1"
 servers:
   - url: https://localhost:3000/api/v1
@@ -50,20 +50,41 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: "#/components/schemas/ServerResponseMessage"
         "401":
           description: Logged in failed
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: "#/components/schemas/ServerResponseMessage"
+  /logout:
+    post:
+      tags:
+        - Users
+      security:
+        - cookieAuth: []
+      description: User log out (expires JWT cookies)
+      responses:
+        "200":
+          description: Successfully logged out (expires cookies)
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; httponly
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
 components:
+  schemas:
+    ServerResponseMessage:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
   securitySchemes:
     cookieAuth: # arbitrary name for the security scheme; will be used in the "security" key later
       type: apiKey

@@ -239,7 +239,7 @@ paths:
         required: false
         schema:
           type: string
-          default: ''
+          default: ""
         description: search and return user names that contains 'q'
     get:
       tags:
@@ -257,6 +257,49 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/UserBasic"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
+              example:
+                message: Unauthorized
+  /add-friend-request:
+    post:
+      tags:
+        - Friends
+      security:
+        - cookieAuth: []
+      summary: Send a new friend request.
+      description: Send a friend request to a non-friend.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                targetUserId:
+                  type: string
+      responses:
+        "200":
+          description: the friend request sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  from:
+                    type: string
+                  to:
+                    type: string
+                  date:
+                    type: string
+                    format: date-time
+                  processed:
+                    type: boolean
         "401":
           description: Unauthorized
           content:

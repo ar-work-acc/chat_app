@@ -133,6 +133,46 @@ paths:
                 $ref: "#/components/schemas/ServerResponseMessage"
               example:
                 message: Unauthorized
+  /friends/{friendId}:
+    parameters:
+      - name: friendId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Friends
+      security:
+        - cookieAuth: []
+      summary: Get friend details for friend ID `friendId`.
+      description: Get user friend detail for a specific friend ID.
+      responses:
+        "200":
+          description: Friend detail.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  username:
+                    type: string
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  avatar:
+                    type: string
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
+              example:
+                message: Unauthorized
 
 components:
   schemas:

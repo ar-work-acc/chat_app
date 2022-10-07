@@ -8,7 +8,9 @@ export const jwtErrorSuppressor = async (ctx, next) => {
       console.error(`401 Unauthorized: ${ctx.method} ${ctx.url}`);
       ctx.status = 401;
       ctx.body = {
-        message: 'Protected resource, use Authorization header to get access',
+        message:
+          'Protected resource, use Authorization header' +
+          ' or cookie to get access',
       };
     } else {
       throw err;

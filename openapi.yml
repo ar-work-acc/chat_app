@@ -59,6 +59,7 @@ paths:
                 $ref: "#/components/schemas/ServerResponseMessage"
   /logout:
     post:
+      summary: User log out (expire cookies)
       tags:
         - Users
       security:
@@ -76,6 +77,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ServerResponseMessage"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
+  /user:
+    get:
+      summary: Get information of current user
+      tags:
+        - Users
+      security:
+        - cookieAuth: []
+      description: get user info of currently logged in user
+      responses:
+        "200":
+          description: get current user data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
 components:
   schemas:
     ServerResponseMessage:
@@ -85,6 +109,30 @@ components:
           type: string
       required:
         - message
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+        username:
+          type: string
+        facebookAccountConnected:
+          type: boolean
+        googleAccountConnected:
+          type: boolean
+        firstName:
+          type: string
+        lastName:
+          type: string
+        avatar:
+          type: string
+        friends:
+          type: array
+          items:
+            type: string
+        created:
+          type: string
+          format: date-time
   securitySchemes:
     cookieAuth: # arbitrary name for the security scheme; will be used in the "security" key later
       type: apiKey

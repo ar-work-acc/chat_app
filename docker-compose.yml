@@ -49,5 +49,13 @@ services:
       - 6379:6379
     networks:
       - chat_network
+  swagger:
+    container_name: swagger
+    image: swaggerapi/swagger-editor:v4.4.2
+    ports:
+      - 80:8080
+    restart: always
+    networks:
+      - chat_network
 networks:
   chat_network:

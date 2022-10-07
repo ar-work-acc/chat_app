@@ -102,3 +102,8 @@ Add rules to relax formatting:
 1. Run "run_docker_compose.sh" to start up the system.
 2. If you want to initialize the database with some data, run "npm run initdb"
    (optional).
+
+## OpenAPI
+
+Import into Postman.  
+Next time, don't use HTTPS for local development!

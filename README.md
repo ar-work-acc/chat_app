@@ -106,4 +106,5 @@ Add rules to relax formatting:
 ## OpenAPI
 
 Import into Postman.  
-Next time, don't use HTTPS for local development!
+Next time, don't use HTTPS for local development!  
+Also, use an object instead of an array for all JSON responses!

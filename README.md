@@ -102,3 +102,11 @@ Add rules to relax formatting:
 1. Run "run_docker_compose.sh" to start up the system.
 2. If you want to initialize the database with some data, run "npm run initdb"
    (optional).
+
+## OpenAPI
+
+Import into Postman to start testing; API docs available at
+[demo chat API docs](https://glistening-cranachan-9778b7.netlify.app/)
+
+- Next time, don't use HTTPS for local development!
+- Also, use an object instead of an array for all JSON responses!

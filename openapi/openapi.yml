@@ -1,0 +1,508 @@
+openapi: 3.0.3
+info:
+  title: OpenAPI for Chat App
+  version: "0.1"
+servers:
+  - url: https://localhost:3000/api/v1
+    description: base URL for local development
+tags:
+  - name: Users
+    description: User-related operations
+  - name: Friends
+    description: Friends-related operations
+  - name: Messages
+    description: Message-related operations
+paths:
+  /login:
+    post:
+      tags:
+        - Users
+      summary: User log in with account and password.
+      requestBody:
+        description: Use credentials to log into app.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                  format: password
+              required:
+                - username
+                - password
+            example:
+              username: alice@meowfish.org
+              password: "111"
+      responses:
+        "200":
+          description: >
+            Successfully authenticated.
+            JWT token is returned in a cookie named `jwt`. 
+            You need to include this cookie in subsequent requests.
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: >
+                  jwt=***; Path=/; Secure; HttpOnly; Expires=Fri, 14 Oct 2022 05:42:22 GMT;
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
+        "401":
+          description: Logged in failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
+              example:
+                message: User authentication failed!
+  /logout:
+    post:
+      summary: User log out (expire all cookies).
+      tags:
+        - Users
+      security:
+        - cookieAuth: []
+      description: User log out (expires JWT cookies)
+      responses:
+        "200":
+          description: Successfully logged out (expires cookies)
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; httponly
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
+              example:
+                message: User successfully logged out.
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
+              example:
+                message: Unauthorized
+  /user:
+    get:
+      summary: Get information of current user.
+      tags:
+        - Users
+      security:
+        - cookieAuth: []
+      description: Get user details of currently logged in user.
+      responses:
+        "200":
+          description: Successfully gets current user data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+  /friends:
+    get:
+      summary: Get a list of friends for current user.
+      tags:
+        - Friends
+      security:
+        - cookieAuth: []
+      description: Query the database and return a list of user's friends.
+      responses:
+        "200":
+          description: a list of user friends
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
+              example:
+                message: Unauthorized
+  /friends/{friendId}:
+    parameters:
+      - name: friendId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Friends
+      security:
+        - cookieAuth: []
+      summary: Get friend details for friend ID `friendId`.
+      description: Get user friend detail for a specific friend ID.
+      responses:
+        "200":
+          description: Friend detail.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  username:
+                    type: string
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  avatar:
+                    type: string
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
+              example:
+                message: Unauthorized
+  /messages/{friendId}:
+    parameters:
+      - name: friendId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 0
+        description: Nth page of messages, N starts from 0.
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+        description: Max number of messages to return.
+    get:
+      tags:
+        - Messages
+      security:
+        - cookieAuth: []
+      summary: Get messages from friend.
+      description: Get a page of messages from friend with page and page size in query params.
+      responses:
+        "200":
+          description: A list of messages from this friend.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Message"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
+              example:
+                message: Unauthorized
+  /non-friends:
+    parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 0
+        description: Nth page of users that are not friends, N starts from 0.
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+        description: Max number of non-friend users to return.
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+          default: ""
+        description: search and return user names that contains 'q'
+    get:
+      tags:
+        - Friends
+      security:
+        - cookieAuth: []
+      summary: Get a page of non-friend users.
+      description: Get a page of non-friend users, with username additionally filtered by `q`.
+      responses:
+        "200":
+          description: Retrieve a page of non-friend for sending friend requests.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserBasic"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
+              example:
+                message: Unauthorized
+  /add-friend-request:
+    post:
+      tags:
+        - Friends
+      security:
+        - cookieAuth: []
+      summary: Send a new friend request.
+      description: Send a friend request to a non-friend.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                targetUserId:
+                  type: string
+      responses:
+        "200":
+          description: The friend request that is created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FriendRequest"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
+              example:
+                message: Unauthorized
+  /friend-requests:
+    parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 0
+        description: Nth page of friend requests, N starts from 0.
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+        description: Max number of friend requests to return.
+    get:
+      tags:
+        - Friends
+      security:
+        - cookieAuth: []
+      summary: Get a page of friend requests.
+      description: Get a page of friend requests, newest request first.
+      responses:
+        "200":
+          description: A list of friend requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                    from:
+                      $ref: "#/components/schemas/UserBasic"
+                    to:
+                      type: string
+                    date:
+                      type: string
+                      format: date-time
+                    processed:
+                      type: boolean
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
+              example:
+                message: Unauthorized
+  /user-friend-requests:
+    parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 0
+        description: Nth page of friend requests that the user sent (but is not processed), N starts from 0.
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+        description: Max number of friend requests to return.
+    get:
+      tags:
+        - Friends
+      security:
+        - cookieAuth: []
+      summary: Get a page of friend requests that the user sent but is not processed yet.
+      description: Get a page of friend requests that the user sent but is not processed yet, ordered from latest to oldest.
+      responses:
+        "200":
+          description: A list of unprocessed user friend requests.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FriendRequest"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
+              example:
+                message: Unauthorized
+  /accept-friend-request:
+    post:
+      tags:
+        - Friends
+      security:
+        - cookieAuth: []
+      summary: Accept a friend request.
+      description: Accept a friend request.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                targetUserId:
+                  type: string
+      responses:
+        "200":
+          description: operation success message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
+              example:
+                message: Friend added
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
+              example:
+                message: Unauthorized
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponseMessage"
+              example:
+                message: Error accepting friend request.
+components:
+  schemas:
+    ServerResponseMessage:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+        username:
+          type: string
+        facebookAccountConnected:
+          type: boolean
+        googleAccountConnected:
+          type: boolean
+        firstName:
+          type: string
+        lastName:
+          type: string
+        avatar:
+          type: string
+        friends:
+          type: array
+          items:
+            type: string
+        created:
+          type: string
+          format: date-time
+    UserBasic:
+      type: object
+      properties:
+        _id:
+          type: string
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+    Message:
+      type: object
+      properties:
+        _id:
+          type: string
+        from:
+          type: string
+        to:
+          type: string
+        content:
+          type: string
+        date:
+          type: string
+          format: date-time
+    FriendRequest:
+      type: object
+      properties:
+        _id:
+          type: string
+        from:
+          type: string
+        to:
+          type: string
+        date:
+          type: string
+          format: date-time
+        processed:
+          type: boolean
+  securitySchemes:
+    cookieAuth: # arbitrary name for the security scheme; will be used in the "security" key later
+      type: apiKey
+      in: cookie
+      name: jwt # cookie name

@@ -105,6 +105,8 @@ Add rules to relax formatting:
 
 ## OpenAPI
 
-Import into Postman.  
-Next time, don't use HTTPS for local development!  
-Also, use an object instead of an array for all JSON responses!
+Import into Postman to start testing; API docs available at
+[demo chat API docs](https://glistening-cranachan-9778b7.netlify.app/)
+
+- Next time, don't use HTTPS for local development!
+- Also, use an object instead of an array for all JSON responses!
